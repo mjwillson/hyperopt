@@ -8,7 +8,10 @@ __authors__   = "James Bergstra"
 __license__   = "3-clause BSD License"
 __contact__   = "github.com/hyperopt/hyperopt"
 
-import cPickle
+try:
+    import dill as pickle
+except ImportError:
+    import cPickle as pickle
 import logging
 import os
 
@@ -73,7 +76,7 @@ def main_search():
         if not options.load:
             raise IOError()
         handle = open(options.load, 'rb')
-        self = cPickle.load(handle)
+        self = pickle.load(handle)
         handle.close()
     except IOError:
         bandit = utils.get_obj(bandit_json, argfile=options.bandit_argfile)
@@ -86,7 +89,7 @@ def main_search():
         self.run(int(options.steps))
     finally:
         if options.save:
-            cPickle.dump(self, open(options.save, 'wb'))
+            pickle.dump(self, open(options.save, 'wb'))
 
 
 def main(cmd, fn_pos = 1):

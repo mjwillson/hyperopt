@@ -1,7 +1,10 @@
 import datetime
 import numpy as np
 import logging
-import cPickle
+try:
+    import dill as pickle
+except ImportError:
+    import cPickle as pickle
 import os
 import shutil
 logger = logging.getLogger(__name__)
@@ -75,7 +78,7 @@ def get_obj(f, argfile=None, argstr=None, args=(), kwargs=None):
     if argfile is not None:
         argstr = open(argfile).read()
     if argstr is not None:
-        argd = cPickle.loads(argstr)
+        argd = pickle.loads(argstr)
     else:
         argd = {}
     args = args + argd.get('args',())
@@ -107,7 +110,7 @@ def fast_isin(X,Y):
     """
     Indices of elements in a numpy array that appear in another.
 
-    Fast routine for determining indices of elements in numpy array `X` that 
+    Fast routine for determining indices of elements in numpy array `X` that
     appear in numpy array `Y`, returning a boolean array `Z` such that::
 
             Z[i] = X[i] in Y
@@ -129,7 +132,7 @@ def fast_isin(X,Y):
 
 def get_most_recent_inds(obj):
     data = numpy.rec.array([(x['_id'], int(x['version']))
-                            for x in obj], 
+                            for x in obj],
                             names=['_id', 'version'])
     s = data.argsort(order=['_id', 'version'])
     data = data[s]

@@ -1,4 +1,7 @@
-import cPickle
+try:
+    import dill as pickle
+except ImportError:
+    import cPickle as pickle
 import os
 import signal
 import subprocess
@@ -55,7 +58,7 @@ class TempMongo(object):
                     proc_args,
                     stdout=subprocess.PIPE,
                     stderr=subprocess.PIPE,
-                    cwd=self.workdir, # this prevented mongod assertion fail 
+                    cwd=self.workdir, # this prevented mongod assertion fail
                     )
             try:
                 interval = .125
@@ -108,7 +111,7 @@ class TempMongo(object):
             return False
 
 # -- If we can't create a TempMongo instance, then
-#    simply print what happened, 
+#    simply print what happened,
 try:
     with TempMongo() as temp_mongo:
         pass
@@ -292,8 +295,8 @@ class TestExperimentWithThreads(unittest.TestCase):
         # -- should not matter which domain is used here
         domain = gauss_wave2()
 
-        cPickle.dumps(domain.expr)
-        cPickle.dumps(passthrough)
+        pickle.dumps(domain.expr)
+        pickle.dumps(passthrough)
 
 
         worker_threads = [
@@ -373,4 +376,3 @@ def test_main_worker(trials):
     # -- check that it runs
     #    and that the reserve timeout is respected
     main_worker_helper(options, ())
-
